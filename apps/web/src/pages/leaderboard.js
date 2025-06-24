@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
-import Link from "next/link";
 import { useAuth } from "../components/AuthProvider";
+import RequireAuth from "@/components/RequireAuth";
+
+const medalColors = [
+  "bg-gradient-to-r from-yellow-400 to-yellow-200 text-yellow-900",
+  "bg-gradient-to-r from-gray-300 to-gray-100 text-gray-700",
+  "bg-gradient-to-r from-orange-400 to-yellow-100 text-orange-800",
+];
 
 export default function Leaderboard() {
   const { profile } = useAuth();
@@ -29,31 +35,46 @@ export default function Leaderboard() {
   }, []);
 
   return (
-    <main className="max-w-xl mx-auto mt-10 px-4">
-      <h1 className="text-2xl font-bold text-flinch mb-4">Top Flinched Authors (24h)</h1>
-      <div className="bg-[#18181b] rounded-xl p-6 shadow space-y-4">
-        {error && <div className="text-red-400 mb-3">{error}</div>}
+    <RequireAuth>
+    <main className="max-w-xl mx-auto mt-12 px-4">
+      <h1 className="text-3xl font-extrabold text-white mb-7 text-center tracking-tight flex items-center justify-center gap-2 drop-shadow">
+        🏆 Top Flinched Authors (Every 24h)
+      </h1>
+      <div className="bg-gradient-to-br from-white via-[#ffe9d6] to-[#fff8f3] rounded-2xl p-7 shadow-xl space-y-4 border-t-8 border-flinch">
+        {error && <div className="text-red-500 mb-3 font-semibold">{error}</div>}
         {loading ? (
-          <div>Loading…</div>
+          <div className="text-center text-gray-500">Loading…</div>
         ) : (
-          <>
-            <ol className="list-decimal pl-6">
-              {top.length === 0 && <li>No flinches in the last 24 hours.</li>}
-              {top.map((row, idx) => (
-                <li key={row.user_id} className="mb-2">
-                  <span className="font-bold text-flinch">
+          <ol className="space-y-3">
+            {top.length === 0 && <li>No flinches in the last 24 hours.</li>}
+            {top.map((row, idx) => (
+              <li
+                key={row.user_id}
+                className={`
+                  flex items-center justify-between p-4 rounded-lg shadow
+                  ${idx < 3 ? medalColors[idx] : "bg-white"}
+                `}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl font-extrabold">{idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${idx + 1}`}</span>
+                  <span className="font-bold text-lg">
                     @{row.handle || "unknown"}
                   </span>
-                  {profile?.id === row.user_id && <span className="ml-2 text-xs text-white/70">(You)</span>}
-                  <span className="ml-4 text-gray-400">
-                    Flinches received: {row.flinches_received}
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </>
+                  {profile?.id === row.user_id && (
+                    <span className="ml-2 text-xs font-medium text-orange-600 bg-orange-100 rounded px-2 py-0.5">
+                      (You)
+                    </span>
+                  )}
+                </div>
+                <span className="text-lg font-semibold text-orange-600">
+                  💥 {row.flinches_received}
+                </span>
+              </li>
+            ))}
+          </ol>
         )}
       </div>
     </main>
+    </RequireAuth>
   );
 }

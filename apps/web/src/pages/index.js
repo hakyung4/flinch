@@ -15,7 +15,7 @@ export default function Home() {
       .from("posts")
       .select("id, content, created_at, flinch_count, vanished, profiles(handle)")
       .eq("is_public", true)
-      .eq("vanished", false)  
+      .eq("vanished", false)
       .order("created_at", { ascending: false });
     setLoading(false);
     if (error) return setPosts([]);
@@ -28,24 +28,31 @@ export default function Home() {
 
   return (
     <RequireAuth>
-      <main className="max-w-xl mx-auto mt-8 px-2">
-        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-flinch">Confessions Feed</h1>
-        <PostConfessionForm onPost={fetchPosts} />
+      <main className="max-w-2xl mx-auto mt-10 px-2">
+        <h1 className="text-3xl font-extrabold mb-8 text-white text-center drop-shadow tracking-tight">Confessions Feed</h1>
+        <div className="mb-8">
+          <PostConfessionForm onPost={fetchPosts} />
+        </div>
         {loading ? (
           <div className="text-center text-gray-400 mt-8">Loading...</div>
         ) : posts.length === 0 ? (
-          <div className="text-center text-gray-500 mt-8">No confessions yet.</div>
+          <div className="text-center text-gray-400 mt-8">No confessions yet.</div>
         ) : (
-          <ul className="space-y-6 mt-8">
+          <ul className="space-y-7 mt-6">
             {posts.map((post) => (
-              <li key={post.id} className="bg-[#18181b] rounded-xl shadow p-5 flex flex-col gap-2 border border-[#222]">
+              <li
+                key={post.id}
+                className="bg-gradient-to-br from-[#fff8f3] via-[#ffe9d6] to-[#fff8f3] rounded-2xl shadow-lg p-6 flex flex-col gap-2 border border-orange-200"
+              >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-semibold text-flinch">@{post.profiles?.handle || "anonymous"}</span>
-                  <span className="text-xs text-gray-500">
+                  <span className="font-bold text-gray-900 text-base tracking-tight">
+                    @{post.profiles?.handle || "anonymous"}
+                  </span>
+                  <span className="text-xs text-gray-500 font-mono">
                     {new Date(post.created_at).toLocaleString()}
                   </span>
                 </div>
-                <p className="text-lg text-gray-100 break-words whitespace-pre-line">{post.content}</p>
+                <p className="text-lg text-gray-900 break-words whitespace-pre-line leading-relaxed">{post.content}</p>
                 <div className="flex items-center gap-4 mt-2">
                   {user && (
                     <FlinchButton postId={post.id} initialCount={post.flinch_count} userId={user.id} />
@@ -93,15 +100,21 @@ function FlinchButton({ postId, initialCount, userId }) {
 
   return (
     <button
-      className={`flex items-center px-4 py-1.5 rounded text-white font-semibold transition text-base
-        ${flinched ? "bg-flinch/40 cursor-not-allowed" : "bg-flinch hover:bg-flinch-dark"}
-        shadow focus:outline-none focus:ring-2 focus:ring-flinch focus:ring-offset-2`}
+      className={`flex items-center px-5 py-2 rounded-lg text-white font-semibold text-base transition
+        ${flinched ? "bg-orange-200 text-orange-600 cursor-not-allowed" : "bg-flinch hover:bg-orange-500"}
+        shadow-md focus:outline-none focus:ring-2 focus:ring-flinch focus:ring-offset-2`}
       onClick={handleFlinch}
       disabled={flinched || loading}
+      aria-pressed={flinched}
+      aria-label={`Flinch${flinched ? "ed" : ""} this confession`}
     >
-      <span className="pr-1">💥</span>
+      <span className="pr-1 text-lg">💥</span>
       <span>Flinch</span>
-      <span className="ml-2">{count}</span>
+      <span className={`ml-2 rounded px-2 py-0.5 font-bold ${
+        flinched ? "bg-orange-50 text-orange-600" : "bg-white/80 text-flinch"
+      }`}>
+        {count}
+      </span>
     </button>
   );
 }

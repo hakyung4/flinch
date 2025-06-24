@@ -30,20 +30,22 @@ export default function PostConfessionForm({ onPost }) {
 
   return (
     <form onSubmit={handleSubmit} className="mb-8">
-      <textarea
-        className="w-full border border-[#333] bg-[#18181b] rounded-xl p-3 text-gray-100 focus:outline-none focus:ring-2 focus:ring-flinch resize-none shadow"
-        rows={3}
-        placeholder="Write your anonymous confession…"
-        value={content}
-        onChange={e => setContent(e.target.value)}
-        disabled={loading}
-        maxLength={500}
-      />
-      {error && <div className="text-red-400 mt-1">{error}</div>}
+      <div className="rounded-2xl bg-white/80 border border-orange-200 shadow-lg p-3 transition-all">
+        <textarea
+          className="w-full bg-transparent border-0 focus:ring-0 focus:outline-none text-gray-900 placeholder-gray-400 text-lg resize-none"
+          rows={3}
+          placeholder="Write your anonymous confession…"
+          value={content}
+          onChange={e => setContent(e.target.value)}
+          disabled={loading}
+          maxLength={500}
+        />
+      </div>
+      {error && <div className="text-red-500 mt-1 font-semibold">{error}</div>}
       <div className="flex justify-end mt-2">
         <button
           type="submit"
-          className="bg-flinch hover:bg-flinch-dark text-white font-bold px-5 py-2 rounded-xl transition shadow"
+          className="bg-orange-100 hover:bg-orange-200 cursor-pointer text-gray-700 font-bold px-6 py-2.5 rounded-xl transition shadow-lg focus:outline-none focus:ring-2 focus:ring-flinch/50"
           disabled={loading}
         >
           {loading ? "Posting..." : "Post"}

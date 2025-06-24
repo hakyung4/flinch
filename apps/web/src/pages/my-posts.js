@@ -24,46 +24,53 @@ export default function MyPosts() {
 
   return (
     <RequireAuth>
-      <main className="max-w-xl mx-auto mt-8 px-2">
-        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-flinch">My Confessions</h1>
+      <main className="max-w-xl mx-auto mt-12 px-2">
+        <h1 className="text-3xl font-extrabold mb-8 text-white text-center drop-shadow tracking-tight">My Confessions</h1>
         {loading ? (
           <div className="text-center text-gray-400 mt-8">Loading...</div>
         ) : posts.length === 0 ? (
-          <div className="text-center text-gray-500 mt-8">You have not posted any confessions yet.</div>
+          <div className="text-center text-gray-400 mt-8">You have not posted any confessions yet.</div>
         ) : (
-          <ul className="space-y-6 mt-8">
+          <ul className="space-y-7 mt-6">
             {posts.map((post) => (
               <li
                 key={post.id}
-                className={`rounded-xl shadow p-5 flex flex-col gap-2 border ${
+                className={`rounded-2xl shadow-lg p-6 flex flex-col gap-2 border ${
                   post.vanished
-                    ? "bg-[#2a2239] border-flinch/40 opacity-80"
-                    : "bg-[#18181b] border-[#222]"
+                    ? "bg-gradient-to-br from-[#2a2239] via-orange-100 to-[#fff8f3] border-flinch/50 opacity-90"
+                    : "bg-gradient-to-br from-[#fff8f3] via-[#ffe9d6] to-[#fff8f3] border-orange-200"
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-mono text-xs text-gray-400">
+                  <span className="font-mono text-xs text-gray-500">
                     {new Date(post.created_at).toLocaleString()}
                   </span>
                   {post.vanished ? (
-                    <span className="bg-flinch/25 text-flinch px-2 py-0.5 rounded text-xs font-bold">
+                    <span className="bg-flinch/25 text-gray-700 px-2 py-0.5 rounded text-xs font-bold">
                       Vanished
                     </span>
                   ) : (
-                    <span className="bg-flinch/20 text-flinch px-2 py-0.5 rounded text-xs font-bold">
+                    <span className="bg-flinch/20 text-gray-700 px-2 py-0.5 rounded text-xs font-bold">
                       Public
                     </span>
                   )}
                 </div>
-                <p className="text-lg text-gray-100 break-words whitespace-pre-line">{post.content}</p>
-                <div className="flex items-center gap-4 mt-2 text-xs">
-                  <span>
-                    Flinches:{" "}
-                    <span className="font-bold text-flinch">{post.flinch_count}</span> /{" "}
-                    <span className="text-gray-400">{post.flinch_threshold}</span>
+                <p className={`text-lg break-words whitespace-pre-line leading-relaxed ${
+                  post.vanished ? "text-gray-200" : "text-gray-900"
+                }`}>
+                  {post.content}
+                </p>
+                <div className="flex flex-wrap items-center gap-4 mt-2 text-xs">
+                  <span className="flex items-center gap-1">
+                    <span className="text-gray-600">Flinches:</span>
+                    <span className="text-gray-700">{post.flinch_count}</span>
+                    <span className="text-gray-700">/</span>
+                    <span className="text-gray-800">{post.flinch_threshold}</span>
                   </span>
                   {post.vanished && post.vanished_at && (
-                    <span className="text-gray-500 ml-4">Vanished at {new Date(post.vanished_at).toLocaleString()}</span>
+                    <span className="text-gray-500 ml-4">
+                      Vanished at {new Date(post.vanished_at).toLocaleString()}
+                    </span>
                   )}
                 </div>
               </li>

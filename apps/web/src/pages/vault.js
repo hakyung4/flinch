@@ -11,7 +11,6 @@ export default function Vault() {
   useEffect(() => {
     if (!user) return;
     setLoading(true);
-    // Get all vanished posts this user flinched (from vault table)
     supabase
       .from("vault")
       .select(`
@@ -35,28 +34,33 @@ export default function Vault() {
 
   return (
     <RequireAuth>
-      <main className="max-w-xl mx-auto mt-8 px-2">
-        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-flinch">Your Vault</h1>
+      <main className="max-w-xl mx-auto mt-12 px-2">
+        <h1 className="text-3xl font-extrabold mb-8 text-white text-center drop-shadow tracking-tight">Your Vault</h1>
         {loading ? (
           <div className="text-center text-gray-400 mt-8">Loading...</div>
         ) : vaultPosts.length === 0 ? (
-          <div className="text-center text-gray-500 mt-8">No vanished posts in your vault yet.</div>
+          <div className="text-center text-gray-400 mt-8">No vanished posts in your vault yet.</div>
         ) : (
-          <ul className="space-y-6 mt-8">
+          <ul className="space-y-7 mt-6">
             {vaultPosts.map((entry) => (
-              <li key={entry.id} className="bg-[#18181b] rounded-xl shadow p-5 flex flex-col gap-2 border border-[#222]">
+              <li
+                key={entry.id}
+                className="bg-gradient-to-br from-[#2a2239] via-[#ffe9d6] to-[#fff8f3] rounded-2xl shadow-lg p-6 flex flex-col gap-2 border-l-4 border-flinch"
+              >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-semibold text-flinch">
-                    @{entry.posts?.profiles?.handle || "anonymous"}
+                  <span className="font-bold text-gray-900 text-base tracking-tight flex items-center gap-2">
+                    <span className="bg-flinch/10 px-2 py-0.5 rounded text-gray-700 font-mono text-xs">
+                      @{entry.posts?.profiles?.handle || "anonymous"}
+                    </span>
                   </span>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-gray-600 font-mono">
                     {entry.posts?.vanished_at
                       ? "Vanished: " + new Date(entry.posts.vanished_at).toLocaleString()
                       : ""}
                   </span>
                 </div>
-                <p className="text-lg text-gray-100 break-words whitespace-pre-line">{entry.posts?.content}</p>
-                <div className="text-xs text-gray-500 mt-2">
+                <p className="text-lg text-gray-900 break-words whitespace-pre-line leading-relaxed">{entry.posts?.content}</p>
+                <div className="text-xs text-gray-700 mt-2">
                   Original: {entry.posts?.created_at ? new Date(entry.posts.created_at).toLocaleString() : ""}
                 </div>
               </li>

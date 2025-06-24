@@ -9,16 +9,21 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="bg-[#111] border-b border-gray-800 px-4 py-2 flex items-center justify-between w-full">
-      <Link href="/" className="flex items-center gap-2 font-bold text-flinch text-2xl tracking-tight">
+    <nav className="sticky top-0 left-0 w-full bg-gradient-to-r from-[#232526] via-[#414345] to-[#ffd89b] border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-lg z-50 transition-all duration-300">
+      <Link
+        href="/"
+        className="flex items-center gap-2 font-bold text-flinch text-2xl tracking-tight hover:text-orange-500 transition"
+      >
         <span className="hidden sm:inline">Flinch</span>
         <span className="sm:hidden text-xl">😶‍🌫️</span>
       </Link>
+      {/* Desktop links */}
       <div className="hidden md:flex gap-6 items-center">
         <NavLinks user={user} profile={profile} />
       </div>
+      {/* Mobile menu button */}
       <button
-        className="md:hidden text-flinch focus:outline-none"
+        className="md:hidden text-flinch focus:outline-none p-2 rounded hover:bg-flinch/10"
         onClick={() => setOpen((v) => !v)}
         aria-label="Open menu"
       >
@@ -30,9 +35,9 @@ export default function Navbar() {
       </button>
       {/* Mobile menu */}
       {open && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex flex-col items-end p-8 md:hidden">
+        <div className="fixed inset-0 bg-black/80 z-50 flex flex-col items-end p-8 md:hidden transition-all">
           <button
-            className="mb-8 text-flinch"
+            className="mb-8 text-flinch hover:text-orange-500"
             onClick={() => setOpen(false)}
             aria-label="Close menu"
           >
@@ -59,22 +64,42 @@ function NavLinks({ user, profile, onClick, isMobile }) {
     if (onClick) onClick();
   }
 
+  // Improved: darker, high-contrast text for active
+  const linkBase =
+    "font-semibold px-3 py-2 rounded-md transition text-gray-100 hover:bg-orange-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400/60";
+  const activeBase =
+    "bg-orange-100 text-gray-900 shadow font-extrabold";
+
+  // Highlight the active page
+  function navLink(href, label) {
+    const active = router.pathname === href;
+    return (
+      <Link
+        href={href}
+        onClick={onClick}
+        className={`${linkBase} ${active ? activeBase : "text-gray-100"}`}
+      >
+        {label}
+      </Link>
+    );
+  }
+
   return (
     <>
-      <Link href="/" onClick={onClick} className="hover:text-flinch font-medium">Feed</Link>
-      <Link href="/vault" onClick={onClick} className="hover:text-flinch font-medium">Vault</Link>
-      <Link href="/my-posts" onClick={onClick} className="hover:text-flinch font-medium">My Posts</Link>
-      <Link href="/profile" onClick={onClick} className="hover:text-flinch font-medium">Profile</Link>
-      <Link href="/leaderboard" onClick={onClick} className="hover:text-flinch font-medium">Leaderboard</Link>
+      {navLink("/", "Feed")}
+      {navLink("/vault", "Vault")}
+      {navLink("/my-posts", "My Posts")}
+      {navLink("/profile", "Profile")}
+      {navLink("/leaderboard", "Leaderboard")}
       {user && profile?.handle && (
-        <span className="px-3 py-1 rounded bg-flinch/20 text-flinch font-mono">
+        <span className="px-3 py-1 rounded bg-orange-100 text-gray-900 font-mono select-text ml-1">
           @{profile.handle}
         </span>
       )}
       {user && (
         <button
           onClick={handleSignOut}
-          className={`ml-2 bg-flinch hover:bg-flinch-dark text-white px-4 py-1 rounded font-bold transition ${
+          className={`ml-2 bg-flinch text-gray-600 px-4 py-2 rounded font-bold shadow hover:bg-orange-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-flinch/60 transition cursor-pointer ${
             isMobile ? "w-full mt-2" : ""
           }`}
         >
@@ -82,7 +107,11 @@ function NavLinks({ user, profile, onClick, isMobile }) {
         </button>
       )}
       {!user && (
-        <Link href="/login" onClick={onClick} className="bg-flinch hover:bg-flinch-dark text-white px-4 py-1 rounded font-bold">
+        <Link
+          href="/login"
+          onClick={onClick}
+          className="bg-flinch cursor-pointer text-gray-600 px-4 py-2 rounded font-bold shadow hover:bg-orange-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-flinch/60 transition"
+        >
           Login
         </Link>
       )}
