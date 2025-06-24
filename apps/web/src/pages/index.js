@@ -101,7 +101,7 @@ function FlinchButton({ postId, initialCount, userId }) {
   return (
     <button
       className={`flex items-center px-5 py-2 rounded-lg text-white font-semibold text-base transition
-        ${flinched ? "bg-orange-200 text-orange-600 cursor-not-allowed" : "bg-flinch hover:bg-orange-500"}
+        ${flinched ? "bg-orange-200 text-orange-500 cursor-not-allowed" : "bg-orange-300 hover:bg-orange-400 cursor-pointer"}
         shadow-md focus:outline-none focus:ring-2 focus:ring-flinch focus:ring-offset-2`}
       onClick={handleFlinch}
       disabled={flinched || loading}
@@ -111,7 +111,7 @@ function FlinchButton({ postId, initialCount, userId }) {
       <span className="pr-1 text-lg">💥</span>
       <span>Flinch</span>
       <span className={`ml-2 rounded px-2 py-0.5 font-bold ${
-        flinched ? "bg-orange-50 text-orange-600" : "bg-white/80 text-flinch"
+        flinched ? "bg-orange-50 text-orange-600" : "bg-white/80 text-orange-400"
       }`}>
         {count}
       </span>
