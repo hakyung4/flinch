@@ -1,30 +1,42 @@
 import { useAuth } from "./AuthProvider";
 import { useRouter } from "next/router";
 import { needsHandle } from "@flinch/utils";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function RequireAuth({ children }) {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, profileLoading } = useAuth();
   const router = useRouter();
+  const hasRedirected = useRef(false);
 
+  // Run redirects ONLY after loading is done. Hooks must be called at the top level.
   useEffect(() => {
-    if (loading) return; // Wait until loading is done
+    if (loading || profileLoading || profile === undefined) return;
 
     if (!user) {
-      router.replace("/login");
+      if (!hasRedirected.current) {
+        hasRedirected.current = true;
+        router.replace("/login");
+      }
     } else if (needsHandle(profile)) {
-      router.replace("/set-handle");
+      if (!hasRedirected.current) {
+        hasRedirected.current = true;
+        router.replace("/set-handle");
+      }
     }
-  }, [user, profile, loading, router]);
+  }, [user, profile, loading, profileLoading, router]);
 
-  if (loading) return (
-    <div className="flex justify-center items-center h-64">
-      <span className="text-flinch text-lg animate-pulse">Loading…</span>
-    </div>
-  );
+  // While loading, always show the spinner and nothing else
+  if (loading || profileLoading || profile === undefined) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <span className="text-flinch text-lg animate-pulse">Loading…</span>
+      </div>
+    );
+  }
 
-  // Only render children when user is logged in AND has handle
+  // While redirecting, show nothing
   if (!user || needsHandle(profile)) return null;
 
+  // Otherwise, render the protected content
   return children;
 }

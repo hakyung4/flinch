@@ -1,50 +1,52 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "../../lib/supabase";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState(undefined); // undefined: not loaded, null: no profile
   const [loading, setLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(true);
 
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session?.user) {
-        setUser(session.user);
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", session.user.id)
-          .single();
-        setProfile(profile || null);
-      } else {
-        setUser(null);
-        setProfile(null);
-      }
+    // Listen for auth state changes
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
       setLoading(false);
     });
 
+    // Initial session check
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-        supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", session.user.id)
-          .single()
-          .then(({ data }) => setProfile(data || null));
-      }
+      setUser(session?.user ?? null);
       setLoading(false);
     });
 
     return () => {
-      authListener.subscription.unsubscribe();
+      listener.subscription.unsubscribe();
     };
   }, []);
 
+  useEffect(() => {
+    if (!user) {
+      setProfile(undefined);
+      setProfileLoading(false);
+      return;
+    }
+    setProfileLoading(true);
+    supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single()
+      .then(({ data, error }) => {
+        setProfile(data ?? null);
+        setProfileLoading(false);
+      });
+  }, [user]);
+
   return (
-    <AuthContext.Provider value={{ user, profile, setProfile, loading }}>
+    <AuthContext.Provider value={{ user, profile, loading, profileLoading }}>
       {children}
     </AuthContext.Provider>
   );
