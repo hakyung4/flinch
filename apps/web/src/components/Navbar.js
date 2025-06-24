@@ -91,6 +91,7 @@ function NavLinks({ user, profile, onClick, isMobile }) {
       {navLink("/my-posts", "My Posts")}
       {navLink("/profile", "Profile")}
       {navLink("/leaderboard", "Leaderboard")}
+      {navLink("/about", "About")}
       {user && profile?.handle && (
         <span className="px-3 py-1 rounded bg-orange-100 text-gray-900 font-mono select-text ml-1">
           @{profile.handle}

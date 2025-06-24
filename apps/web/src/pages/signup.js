@@ -73,6 +73,12 @@ export default function Signup() {
             {loading ? "Signing up..." : "Sign Up"}
           </button>
         </form>
+        <p className="mt-3 text-xs text-gray-500 text-center">
+          By signing up, you agree to our{" "}
+          <a href="/terms" className="underline hover:text-gray-400 font-semibold">Terms of Service</a>
+          {" "}and{" "}
+          <a href="/privacy" className="underline hover:text-gray-400 font-semibold">Privacy Policy</a>.
+        </p>
         {error && <p className="text-red-600 mt-4 text-center font-semibold">{error}</p>}
         <p className="mt-8 text-center text-gray-700">
           Already have an account?{" "}
