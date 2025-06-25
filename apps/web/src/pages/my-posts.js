@@ -25,7 +25,7 @@ export default function MyPosts() {
   return (
     <RequireAuth>
       <main className="max-w-xl mx-auto mt-12 px-2">
-        <h1 className="text-3xl font-extrabold mb-8 text-white text-center drop-shadow tracking-tight">My Confessions</h1>
+        <h1 className="text-3xl font-extrabold mb-8 text-gray-600 text-center drop-shadow tracking-tight">My Confessions</h1>
         {loading ? (
           <div className="text-center text-gray-400 mt-8">Loading...</div>
         ) : posts.length === 0 ? (

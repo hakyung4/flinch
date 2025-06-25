@@ -1,7 +1,7 @@
 export default function About() {
   return (
     <main className="max-w-2xl mx-auto px-4 py-12 text-gray-900">
-      <h1 className="text-4xl font-extrabold mb-4 text-flinch">About Flinch</h1>
+      <h1 className="text-4xl font-extrabold mb-4 text-flinch text-gray-600">About Flinch</h1>
       <section className="mb-8 bg-white/80 p-6 rounded-xl shadow border border-orange-200">
         <h2 className="text-2xl font-bold mb-2">What is Flinch?</h2>
         <p>

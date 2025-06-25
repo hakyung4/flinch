@@ -57,7 +57,7 @@ export default function ProfilePage() {
   return (
     <RequireAuth>
       <main className="max-w-xl mx-auto mt-12 px-4">
-        <h1 className="text-3xl font-extrabold text-white mb-7 text-center tracking-tight drop-shadow">Profile</h1>
+        <h1 className="text-3xl font-extrabold text-gray-600 mb-7 text-center tracking-tight drop-shadow">Profile</h1>
         <div className="relative bg-gradient-to-br from-[#fff8f3] via-[#ffe9d6] to-[#fff8f3] rounded-2xl p-8 shadow-xl space-y-7 border-l-8 border-flinch">
           <div className="flex items-center gap-4 mb-3">
             <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-3xl font-bold text-gray-600 border-2 border-flinch">

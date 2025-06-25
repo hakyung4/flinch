@@ -93,9 +93,14 @@ function NavLinks({ user, profile, onClick, isMobile }) {
       {navLink("/leaderboard", "Leaderboard")}
       {navLink("/about", "About")}
       {user && profile?.handle && (
-        <span className="px-3 py-1 rounded bg-orange-100 text-gray-900 font-mono select-text ml-1">
+        <Link
+          href="/profile"
+          onClick={onClick}
+          className="px-3 py-1 rounded bg-orange-100 hover:bg-orange-50 text-gray-900 font-mono select-text ml-1 transition"
+          passHref
+        >
           @{profile.handle}
-        </span>
+        </Link>
       )}
       {user && (
         <button

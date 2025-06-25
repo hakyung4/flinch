@@ -37,7 +37,7 @@ export default function Leaderboard() {
   return (
     <RequireAuth>
     <main className="max-w-xl mx-auto mt-12 px-4">
-      <h1 className="text-3xl font-extrabold text-white mb-7 text-center tracking-tight flex items-center justify-center gap-2 drop-shadow">
+      <h1 className="text-3xl font-extrabold text-gray-600 mb-7 text-center tracking-tight flex items-center justify-center gap-2 drop-shadow">
         🏆 Top Flinched Authors (Every 24h)
       </h1>
       <div className="bg-gradient-to-br from-white via-[#ffe9d6] to-[#fff8f3] rounded-2xl p-7 shadow-xl space-y-4 border-t-8 border-flinch">
