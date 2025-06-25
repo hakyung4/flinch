@@ -32,7 +32,7 @@ export default function SetHandle() {
       .update({ handle: handle.trim() })
       .eq("id", user.id)
       .select()
-      .single();
+      .maybeSingle();
     setLoading(false);
     if (error) {
       if (error.code === "23505" || error.message.match(/duplicate key/)) {
