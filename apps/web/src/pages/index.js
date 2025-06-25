@@ -121,7 +121,7 @@ export default function Home() {
                 <ConfessionCard
                   key={post.id}
                   post={post}
-                  userId={user.id}
+                  userId={user?.id}
                   flinched={flinchedSet.has(post.id)}
                   onFlinch={(id) => {
                     setFlinchedSet(prev => new Set(prev).add(id));
