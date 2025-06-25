@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../components/AuthProvider";
 import { useRouter } from "next/router";
+import { needsHandle } from "@flinch/utils";
 
 const medalColors = [
   "bg-gradient-to-r from-yellow-400 to-yellow-200 text-yellow-900",
@@ -10,12 +11,13 @@ const medalColors = [
 ];
 
 export default function Leaderboard() {
-  const { user, profile, loading:authLoading } = useAuth();
+  const { user, profile, loading:authLoading, profileLoading } = useAuth();
   const [top, setTop] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
   const [showSigninMsg, setShowSigninMsg] = useState(false);
+  const [showHandleMsg, setShowHandleMsg] = useState(false);
   
   useEffect(() => {
     let ignore = false;
@@ -45,13 +47,35 @@ export default function Leaderboard() {
     }
   }, [user, authLoading, router]);
 
-  if (authLoading) {
-    return (
-      <main className="max-w-2xl mx-auto mt-10 px-2">
-        <div className="text-center text-gray-400 mt-8">Loading...</div>
-      </main>
-    );
-  }
+    useEffect(() => {
+    if (!authLoading && !profileLoading) {
+      if (!user) {
+        setShowSigninMsg(true);
+        setTimeout(() => router.replace("/login"), 1500);
+      } else if (needsHandle(profile)) {
+        setShowHandleMsg(true);
+        setTimeout(() => router.replace("/set-handle"), 1500);
+      }
+      }
+    }, [user, profile, authLoading, profileLoading, router]);
+  
+    if (authLoading || profileLoading) {
+      return (
+        <main className="max-w-2xl mx-auto mt-10 px-2">
+          <div className="text-center text-gray-400 mt-8">Loading...</div>
+        </main>
+      );
+    }
+  
+      if (showHandleMsg) {
+      return (
+        <main className="max-w-2xl mx-auto mt-10 px-2">
+          <div className="text-center text-orange-600 mt-8 font-semibold text-lg">
+            Please set a username to continue. Redirecting…
+          </div>
+        </main>
+      );
+    }
 
   // If not signed in, show sign-in required message
   if (showSigninMsg) {

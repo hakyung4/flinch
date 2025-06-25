@@ -4,7 +4,6 @@ import { supabase } from "../../../lib/supabase";
 import Pagination from "@/components/Pagination";
 import ConfessionCard from "@/components/ConfessionCard";
 import Link from "next/link";
-import RequireAuth from "@/components/RequireAuth";
 import { useAuth } from "@/components/AuthProvider";
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -62,7 +61,7 @@ export default function UserPostsPage() {
       // Fetch posts for this user
       const { data, error } = await supabase
         .from("posts")
-        .select("id, content, created_at, flinch_count, vanished, profiles(handle)")
+        .select("id, content, created_at, flinch_count, vanished, user_id, profiles(handle)")
         .eq("is_public", true)
         .eq("vanished", false)
         .eq("user_id", profileId)
@@ -128,7 +127,6 @@ export default function UserPostsPage() {
   }
 
   return (
-    <RequireAuth>
       <main className="max-w-2xl mx-auto mt-10 px-2">
         <div className="mb-4 flex items-center gap-2">
           <Link
@@ -181,6 +179,5 @@ export default function UserPostsPage() {
           </>
         )}
       </main>
-    </RequireAuth>
   );
 }

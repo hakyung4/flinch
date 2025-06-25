@@ -3,11 +3,12 @@ import { supabase } from "../../lib/supabase";
 import { useAuth } from "../components/AuthProvider";
 import Pagination from "../components/Pagination";
 import { useRouter } from "next/router";
+import { needsHandle } from "@flinch/utils";
 
 const DEFAULT_PAGE_SIZE = 10;
 
 export default function Vault() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, profile, profileLoading } = useAuth();
   const [vaultPosts, setVaultPosts] = useState([]);
   const [totalVaultPosts, setTotalVaultPosts] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -15,6 +16,7 @@ export default function Vault() {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const router = useRouter();
   const [showSigninMsg, setShowSigninMsg] = useState(false);
+  const [showHandleMsg, setShowHandleMsg] = useState(false);
 
   async function fetchTotalVaultPosts() {
     if (!user) return;
@@ -72,10 +74,31 @@ export default function Vault() {
     }
   }, [user, authLoading, router]);
 
-  if (authLoading) {
+    useEffect(() => {
+  if (!authLoading && !profileLoading) {
+    if (!user) {
+      setShowSigninMsg(true);
+      setTimeout(() => router.replace("/login"), 1500);
+    } else if (needsHandle(profile)) {
+      setShowHandleMsg(true);
+      setTimeout(() => router.replace("/set-handle"), 1500);
+    }
+    }
+  }, [user, profile, authLoading, profileLoading, router]);
+
+  if (authLoading || profileLoading) {
     return (
       <main className="max-w-2xl mx-auto mt-10 px-2">
         <div className="text-center text-gray-400 mt-8">Loading...</div>
+      </main>
+    );
+  }
+    if (showHandleMsg) {
+    return (
+      <main className="max-w-2xl mx-auto mt-10 px-2">
+        <div className="text-center text-orange-600 mt-8 font-semibold text-lg">
+          Please set a username to continue. Redirecting…
+        </div>
       </main>
     );
   }

@@ -5,6 +5,7 @@ import PostConfessionForm from "../components/PostConfessionForm";
 import Pagination from "../components/Pagination";
 import ConfessionCard from "@/components/ConfessionCard";
 import { useRouter } from "next/router";
+import { needsHandle } from "@flinch/utils";
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -12,12 +13,13 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [flinchedSet, setFlinchedSet] = useState(new Set());
   const [loading, setLoading] = useState(true);
-  const { user, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading, profileLoading } = useAuth();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [totalPosts, setTotalPosts] = useState(0);
   const router = useRouter();
   const [showSigninMsg, setShowSigninMsg] = useState(false);
+  const [showHandleMsg, setShowHandleMsg] = useState(false);
 
   async function fetchTotalPosts() {
     const { count } = await supabase
@@ -86,11 +88,32 @@ export default function Home() {
       }, 1500); // Show message for 1.5s before redirecting
     }
   }, [user, authLoading, router]);
+  
+  useEffect(() => {
+  if (!authLoading && !profileLoading) {
+    if (!user) {
+      setShowSigninMsg(true);
+      setTimeout(() => router.replace("/login"), 1500);
+    } else if (needsHandle(profile)) {
+      setShowHandleMsg(true);
+      setTimeout(() => router.replace("/set-handle"), 1500);
+    }
+    }
+  }, [user, profile, authLoading, profileLoading, router]);
 
-  if (authLoading) {
+  if (authLoading || profileLoading) {
     return (
       <main className="max-w-2xl mx-auto mt-10 px-2">
         <div className="text-center text-gray-400 mt-8">Loading...</div>
+      </main>
+    );
+  }
+  if (showHandleMsg) {
+    return (
+      <main className="max-w-2xl mx-auto mt-10 px-2">
+        <div className="text-center text-orange-600 mt-8 font-semibold text-lg">
+          Please set a username to continue. Redirecting…
+        </div>
       </main>
     );
   }
