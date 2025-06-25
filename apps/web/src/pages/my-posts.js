@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
-import RequireAuth from "../components/RequireAuth";
 import { useAuth } from "../components/AuthProvider";
 import Pagination from "../components/Pagination";
+import { useRouter } from "next/router";
 
 const DEFAULT_PAGE_SIZE = 10;
 
 export default function MyPosts() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [posts, setPosts] = useState([]);
   const [totalPosts, setTotalPosts] = useState(0);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const router = useRouter();
+  const [showSigninMsg, setShowSigninMsg] = useState(false);
 
   async function fetchTotalPosts() {
     if (!user) return;
@@ -50,6 +52,34 @@ export default function MyPosts() {
     // eslint-disable-next-line
   }, [user, page, pageSize]);
 
+  useEffect(() => {
+    if (!authLoading && !user) {
+      setShowSigninMsg(true);
+      setTimeout(() => {
+        router.replace("/login");
+      }, 1500); // Show message for 1.5s before redirecting
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading) {
+    return (
+      <main className="max-w-2xl mx-auto mt-10 px-2">
+        <div className="text-center text-gray-400 mt-8">Loading...</div>
+      </main>
+    );
+  }
+
+  // If not signed in, show sign-in required message
+  if (showSigninMsg) {
+    return (
+      <main className="max-w-2xl mx-auto mt-10 px-2">
+        <div className="text-center text-orange-600 mt-8 font-semibold text-lg">
+          You need to be signed in to view this page. Redirecting to login…
+        </div>
+      </main>
+    );
+  }
+
   function handlePageChange(newPage) {
     setPage(newPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -63,7 +93,6 @@ export default function MyPosts() {
   const totalPages = Math.max(1, Math.ceil(totalPosts / pageSize));
 
   return (
-    <RequireAuth>
       <main className="max-w-xl mx-auto mt-12 px-2">
         <h1 className="text-3xl font-extrabold mb-8 text-gray-600 text-center drop-shadow tracking-tight">My Confessions</h1>
         <div className="flex items-center gap-3 mb-4">
@@ -141,6 +170,5 @@ export default function MyPosts() {
           </>
         )}
       </main>
-    </RequireAuth>
   );
 }

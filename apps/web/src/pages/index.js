@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
-import RequireAuth from "../components/RequireAuth";
 import { useAuth } from "../components/AuthProvider";
 import PostConfessionForm from "../components/PostConfessionForm";
 import Pagination from "../components/Pagination";
 import ConfessionCard from "@/components/ConfessionCard";
+import { useRouter } from "next/router";
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -12,10 +12,12 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [flinchedSet, setFlinchedSet] = useState(new Set());
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [totalPosts, setTotalPosts] = useState(0);
+  const router = useRouter();
+  const [showSigninMsg, setShowSigninMsg] = useState(false);
 
   async function fetchTotalPosts() {
     const { count } = await supabase
@@ -76,6 +78,35 @@ export default function Home() {
     // eslint-disable-next-line
   }, [page, pageSize, user?.id]);
 
+  useEffect(() => {
+    if (!authLoading && !user) {
+      setShowSigninMsg(true);
+      setTimeout(() => {
+        router.replace("/login");
+      }, 1500); // Show message for 1.5s before redirecting
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading) {
+    return (
+      <main className="max-w-2xl mx-auto mt-10 px-2">
+        <div className="text-center text-gray-400 mt-8">Loading...</div>
+      </main>
+    );
+  }
+
+  // If not signed in, show sign-in required message
+  if (showSigninMsg) {
+    return (
+      <main className="max-w-2xl mx-auto mt-10 px-2">
+        <div className="text-center text-orange-600 mt-8 font-semibold text-lg">
+          You need to be signed in to view this page. Redirecting to login…
+        </div>
+      </main>
+    );
+  }
+
+
   function handlePageChange(newPage) {
     setPage(newPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -89,7 +120,6 @@ export default function Home() {
   const totalPages = Math.max(1, Math.ceil(totalPosts / pageSize));
 
   return (
-    <RequireAuth>
       <main className="max-w-2xl mx-auto mt-10 px-2">
         <h1 className="text-3xl font-extrabold mb-8 text-gray-600 text-center drop-shadow tracking-tight">
           Confessions Feed
@@ -140,6 +170,5 @@ export default function Home() {
           </>
         )}
       </main>
-    </RequireAuth>
   );
 }

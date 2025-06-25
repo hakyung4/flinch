@@ -12,7 +12,7 @@ const DEFAULT_PAGE_SIZE = 10;
 export default function UserPostsPage() {
   const router = useRouter();
   const { handle } = router.query;
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [profileId, setProfileId] = useState(null);
   const [posts, setPosts] = useState([]);
   const [totalPosts, setTotalPosts] = useState(0);
@@ -20,6 +20,7 @@ export default function UserPostsPage() {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [loading, setLoading] = useState(true);
   const [flinchedSet, setFlinchedSet] = useState(new Set());
+  const [showSigninMsg, setShowSigninMsg] = useState(false);
 
   // First, fetch profile id for this handle
   useEffect(() => {
@@ -87,6 +88,33 @@ export default function UserPostsPage() {
     fetchData();
     // eslint-disable-next-line
   }, [profileId, page, pageSize, user?.id]);
+  useEffect(() => {
+    if (!authLoading && !user) {
+      setShowSigninMsg(true);
+      setTimeout(() => {
+        router.replace("/login");
+      }, 1500); // Show message for 1.5s before redirecting
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading) {
+    return (
+      <main className="max-w-2xl mx-auto mt-10 px-2">
+        <div className="text-center text-gray-400 mt-8">Loading...</div>
+      </main>
+    );
+  }
+
+  // If not signed in, show sign-in required message
+  if (showSigninMsg) {
+    return (
+      <main className="max-w-2xl mx-auto mt-10 px-2">
+        <div className="text-center text-orange-600 mt-8 font-semibold text-lg">
+          You need to be signed in to view this page. Redirecting to login…
+        </div>
+      </main>
+    );
+  }
 
   const totalPages = Math.max(1, Math.ceil(totalPosts / pageSize));
 

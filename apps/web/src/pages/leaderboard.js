@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../components/AuthProvider";
-import RequireAuth from "@/components/RequireAuth";
+import { useRouter } from "next/router";
 
 const medalColors = [
   "bg-gradient-to-r from-yellow-400 to-yellow-200 text-yellow-900",
@@ -10,11 +10,13 @@ const medalColors = [
 ];
 
 export default function Leaderboard() {
-  const { profile } = useAuth();
+  const { user, profile, loading:authLoading } = useAuth();
   const [top, setTop] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const router = useRouter();
+  const [showSigninMsg, setShowSigninMsg] = useState(false);
+  
   useEffect(() => {
     let ignore = false;
     async function fetchLeaderboard() {
@@ -34,8 +36,35 @@ export default function Leaderboard() {
     return () => { ignore = true; };
   }, []);
 
+    useEffect(() => {
+    if (!authLoading && !user) {
+      setShowSigninMsg(true);
+      setTimeout(() => {
+        router.replace("/login");
+      }, 1500); // Show message for 1.5s before redirecting
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading) {
+    return (
+      <main className="max-w-2xl mx-auto mt-10 px-2">
+        <div className="text-center text-gray-400 mt-8">Loading...</div>
+      </main>
+    );
+  }
+
+  // If not signed in, show sign-in required message
+  if (showSigninMsg) {
+    return (
+      <main className="max-w-2xl mx-auto mt-10 px-2">
+        <div className="text-center text-orange-600 mt-8 font-semibold text-lg">
+          You need to be signed in to view this page. Redirecting to login…
+        </div>
+      </main>
+    );
+  }
+
   return (
-    <RequireAuth>
     <main className="max-w-xl mx-auto mt-12 px-4">
       <h1 className="text-3xl font-extrabold text-gray-600 mb-7 text-center tracking-tight flex items-center justify-center gap-2 drop-shadow">
         🏆 Top Flinched Authors (Every 24h)
@@ -75,6 +104,5 @@ export default function Leaderboard() {
         )}
       </div>
     </main>
-    </RequireAuth>
   );
 }
