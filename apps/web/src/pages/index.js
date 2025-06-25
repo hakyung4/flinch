@@ -4,11 +4,13 @@ import RequireAuth from "../components/RequireAuth";
 import { useAuth } from "../components/AuthProvider";
 import PostConfessionForm from "../components/PostConfessionForm";
 import Pagination from "../components/Pagination";
+import ConfessionCard from "@/components/ConfessionCard";
 
 const DEFAULT_PAGE_SIZE = 10;
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
+  const [flinchedSet, setFlinchedSet] = useState(new Set());
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const [page, setPage] = useState(1);
@@ -29,30 +31,50 @@ export default function Home() {
     const from = (pageNum - 1) * pageSizeNum;
     const to = from + pageSizeNum - 1;
 
-    const { data, error } = await supabase
+    // 1. Fetch posts
+    const { data: postsData, error } = await supabase
       .from("posts")
-      .select("id, content, created_at, flinch_count, vanished, profiles(handle)")
+      .select("id, content, created_at, flinch_count, vanished, user_id, profiles(handle)")
       .eq("is_public", true)
       .eq("vanished", false)
       .order("created_at", { ascending: false })
       .range(from, to);
 
-    setLoading(false);
-    if (error) {
+    if (!postsData || error) {
       setPosts([]);
-    } else {
-      setPosts(data || []);
+      setFlinchedSet(new Set());
+      setLoading(false);
+      return;
     }
+    setPosts(postsData);
+
+    // 2. Fetch flinched post ids for these posts
+    if (user?.id && postsData.length > 0) {
+      const postIds = postsData.map((post) => post.id);
+      const { data: flinches } = await supabase
+        .from("flinches")
+        .select("post_id")
+        .eq("user_id", user.id)
+        .in("post_id", postIds);
+
+      const flinchedIds = new Set((flinches || []).map((row) => row.post_id));
+      setFlinchedSet(flinchedIds);
+    } else {
+      setFlinchedSet(new Set());
+    }
+
+    setLoading(false);
   }
 
   useEffect(() => {
     fetchTotalPosts();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     fetchPosts(page, pageSize);
     // eslint-disable-next-line
-  }, [page, pageSize]);
+  }, [page, pageSize, user?.id]);
 
   function handlePageChange(newPage) {
     setPage(newPage);
@@ -96,7 +118,15 @@ export default function Home() {
           <>
             <ul className="space-y-7 mt-6">
               {posts.map((post) => (
-                <ConfessionCard key={post.id} post={post} userId={user.id} />
+                <ConfessionCard
+                  key={post.id}
+                  post={post}
+                  userId={user.id}
+                  flinched={flinchedSet.has(post.id)}
+                  onFlinch={(id) => {
+                    setFlinchedSet(prev => new Set(prev).add(id));
+                  }}
+                />
               ))}
             </ul>
             {totalPages > 1 && (
@@ -111,95 +141,5 @@ export default function Home() {
         )}
       </main>
     </RequireAuth>
-  );
-}
-
-function ConfessionCard({ post, userId }) {
-  const [flinched, setFlinched] = useState(false);
-
-  useEffect(() => {
-    let ignore = false;
-    async function checkFlinched() {
-      const { data } = await supabase
-        .from("flinches")
-        .select("id")
-        .eq("user_id", userId)
-        .eq("post_id", post.id)
-        .maybeSingle();
-      if (!ignore) setFlinched(!!data);
-    }
-    checkFlinched();
-    return () => { ignore = true; };
-  }, [post.id, userId]);
-
-  return (
-    <li className="relative bg-gradient-to-br from-[#fff8f3] via-[#ffe9d6] to-[#fff8f3] rounded-2xl shadow-lg p-6 flex flex-col gap-2 border border-orange-200">
-      <div className="flex items-center justify-between mb-1">
-        <span className="font-bold text-gray-900 text-base tracking-tight">
-          @{post.profiles?.handle || "anonymous"}
-        </span>
-        <span className="text-xs text-gray-500 font-mono">
-          {new Date(post.created_at).toLocaleString()}
-        </span>
-      </div>
-      <p className="text-lg text-gray-900 break-words whitespace-pre-line leading-relaxed">{post.content}</p>
-      <div className="flex items-center gap-4 mt-2">
-        <FlinchButton
-          postId={post.id}
-          initialCount={post.flinch_count}
-          userId={userId}
-          flinched={flinched}
-          setFlinched={setFlinched}
-        />
-      </div>
-      <FlinchStatus flinched={flinched} />
-    </li>
-  );
-}
-
-function FlinchButton({ postId, initialCount, userId, flinched, setFlinched }) {
-  const [count, setCount] = useState(initialCount || 0);
-  const [loading, setLoading] = useState(false);
-
-  async function handleFlinch() {
-    if (loading || flinched) return;
-    setLoading(true);
-    const { error } = await supabase
-      .from("flinches")
-      .insert({ user_id: userId, post_id: postId });
-    setLoading(false);
-    if (!error) {
-      setCount((c) => c + 1);
-      setFlinched(true);
-    }
-  }
-
-  return (
-    <button
-      className={`flex items-center px-5 py-2 rounded-lg text-white font-semibold text-base transition
-        ${flinched ? "bg-orange-200 text-orange-500 cursor-not-allowed" : "bg-orange-300 hover:bg-orange-400 cursor-pointer"}
-        shadow-md focus:outline-none focus:ring-2 focus:ring-flinch focus:ring-offset-2`}
-      onClick={handleFlinch}
-      disabled={flinched || loading}
-      aria-pressed={flinched}
-      aria-label={`Flinch${flinched ? "ed" : ""} this confession`}
-    >
-      <span className="pr-1 text-lg">💥</span>
-      <span>Flinch</span>
-      <span className={`ml-2 rounded px-2 py-0.5 font-bold ${
-        flinched ? "bg-orange-50 text-orange-600" : "bg-white/80 text-orange-400"
-      }`}>
-        {count}
-      </span>
-    </button>
-  );
-}
-
-function FlinchStatus({ flinched }) {
-  if (!flinched) return null;
-  return (
-    <span className="absolute bottom-3 right-4 text-xs font-semibold bg-orange-50 text-orange-500 px-2 py-0.5 rounded shadow select-none z-10 pointer-events-none">
-      You flinched
-    </span>
   );
 }

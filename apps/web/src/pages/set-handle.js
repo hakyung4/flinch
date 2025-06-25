@@ -36,7 +36,7 @@ export default function SetHandle() {
     setLoading(false);
     if (error) {
       if (error.code === "23505" || error.message.match(/duplicate key/)) {
-        setError("Handle already taken.");
+        setError("Username already taken.");
       } else {
         setError(error.message);
       }
