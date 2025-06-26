@@ -91,7 +91,6 @@ function NavLinks({ user, profile, onClick, isMobile }) {
       {navLink("/my-posts", "My Posts")}
       {navLink("/profile", "Profile")}
       {navLink("/leaderboard", "Leaderboard")}
-      {navLink("/about", "About")}
       {user && profile?.handle && (
         <Link
           href="/profile"

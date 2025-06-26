@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { supabase } from "../../lib/supabase";
 import { isEmailValid } from "@flinch/utils";
+import Link from "next/link";
 
 export default function Login() {
   const [email, setEmail] = useState("");
