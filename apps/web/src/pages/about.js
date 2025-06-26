@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function About() {
   return (
     <main className="max-w-2xl mx-auto px-4 py-12 text-gray-900">
@@ -31,7 +33,7 @@ export default function About() {
         <div className="mb-4">
           <h3 className="font-semibold">What kind of content is allowed?</h3>
           <p>
-            We encourage honest expression, but do not allow hate, threats, illegal content, or personal attacks. See our <a href="/terms" className="underline text-gray-700 hover:text-gray-500">Terms of Service</a> for details.
+            We encourage honest expression, but do not allow hate, threats, illegal content, or personal attacks. See our <Link href="/terms" className="underline text-gray-700 hover:text-gray-500">Terms of Service</Link> for details.
           </p>
         </div>
         <div className="mb-4">
@@ -44,7 +46,7 @@ export default function About() {
       <section className="bg-white/80 p-6 rounded-xl shadow border border-orange-200">
         <h2 className="text-2xl font-bold mb-2">Contact & Feedback</h2>
         <p>
-          Have a question, suggestion, or concern? Reach out to us at <a href="mailto:support@flinch.app" className="underline text-gray-700 hover:text-gray-500">support@flinch.app</a> — we’d love to hear from you!
+          Have a question, suggestion, or concern? Reach out to us at <Link href="mailto:support@flinch.app" className="underline text-gray-700 hover:text-gray-500">support@flinch.app</Link> — we’d love to hear from you!
         </p>
       </section>
     </main>

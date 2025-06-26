@@ -86,7 +86,7 @@ function NavLinks({ user, profile, onClick, isMobile }) {
 
   return (
     <>
-      {navLink("/", "Feed")}
+      {navLink("/feed", "Feed")}
       {navLink("/vault", "Vault")}
       {navLink("/my-posts", "My Posts")}
       {navLink("/profile", "Profile")}

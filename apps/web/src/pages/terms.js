@@ -1,5 +1,6 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Link from "next/link";
 
 export default function TermsOfService() {
   return (
@@ -25,7 +26,7 @@ export default function TermsOfService() {
 
           <h2 className="font-bold text-lg text-flinch mt-6">3. Privacy</h2>
           <p>
-            Your privacy is important to us. Please review our <a href="/privacy" className="text-flinch underline">Privacy Policy</a> to understand how we collect, use, and safeguard your information.
+            Your privacy is important to us. Please review our <Link href="/privacy" className="text-flinch underline">Privacy Policy</Link> to understand how we collect, use, and safeguard your information.
           </p>
 
           <h2 className="font-bold text-lg text-flinch mt-6">4. Acceptable Use</h2>
@@ -48,7 +49,7 @@ export default function TermsOfService() {
 
           <h2 className="font-bold text-lg text-flinch mt-6">7. Contact</h2>
           <p>
-            For any questions about these Terms, contact us at <a className="underline text-gray-700 hover:text-gray-500" href="mailto:support@flinch.app">support@flinch.app</a>
+            For any questions about these Terms, contact us at <Link className="underline text-gray-700 hover:text-gray-500" href="mailto:support@flinch.app">support@flinch.app</Link>
           </p>
         </div>
       </main>

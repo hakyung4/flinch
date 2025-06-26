@@ -74,9 +74,9 @@ export default function Login() {
         {error && <p className="text-red-600 mt-4 text-center font-semibold">{error}</p>}
         <p className="mt-8 text-center text-gray-700">
           Don&apos;t have an account?{" "}
-          <a className="text-flinch font-semibold hover:underline" href="/signup">
+          <Link className="text-flinch font-semibold hover:underline" href="/signup">
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </main>

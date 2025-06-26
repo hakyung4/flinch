@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { supabase } from "../../lib/supabase";
 import { isEmailValid } from "@flinch/utils";
+import Link from "next/link";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -75,16 +76,16 @@ export default function Signup() {
         </form>
         <p className="mt-3 text-xs text-gray-500 text-center">
           By signing up, you agree to our{" "}
-          <a href="/terms" className="underline hover:text-gray-400 font-semibold">Terms of Service</a>
+          <Link href="/terms" className="underline hover:text-gray-400 font-semibold">Terms of Service</Link>
           {" "}and{" "}
-          <a href="/privacy" className="underline hover:text-gray-400 font-semibold">Privacy Policy</a>.
+          <Link href="/privacy" className="underline hover:text-gray-400 font-semibold">Privacy Policy</Link>.
         </p>
         {error && <p className="text-red-600 mt-4 text-center font-semibold">{error}</p>}
         <p className="mt-8 text-center text-gray-700">
           Already have an account?{" "}
-          <a className="text-flinch font-semibold hover:underline" href="/login">
+          <Link className="text-flinch font-semibold hover:underline" href="/login">
             Login
-          </a>
+          </Link>
         </p>
       </div>
     </main>

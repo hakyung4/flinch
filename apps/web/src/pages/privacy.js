@@ -1,5 +1,4 @@
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Link from "next/link";
 
 export default function PrivacyPolicy() {
   return (
@@ -39,7 +38,7 @@ export default function PrivacyPolicy() {
           <h2 className="font-bold text-lg text-flinch mt-6">5. Your Choices</h2>
           <ul className="list-disc ml-6">
             <li>You may access or update your account information at any time.</li>
-            <li>You may delete your account by contacting us at <a className="underline text-flinch" href="mailto:support@flinch.app">support@flinch.app</a></li>
+            <li>You may delete your account by contacting us at <Link className="underline text-flinch" href="mailto:support@flinch.app">support@flinch.app</Link></li>
           </ul>
 
           <h2 className="font-bold text-lg text-flinch mt-6">6. Changes to This Policy</h2>
@@ -49,7 +48,7 @@ export default function PrivacyPolicy() {
 
           <h2 className="font-bold text-lg text-flinch mt-6">7. Contact</h2>
           <p>
-            If you have any questions or concerns about your privacy, please contact us at <a className="underline text-gray-700 hover:text-gray-500" href="mailto:support@flinch.app">support@flinch.app</a>
+            If you have any questions or concerns about your privacy, please contact us at <Link className="underline text-gray-700 hover:text-gray-500" href="mailto:support@flinch.app">support@flinch.app</Link>
           </p>
         </div>
       </main>
