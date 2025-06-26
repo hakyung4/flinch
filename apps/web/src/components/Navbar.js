@@ -12,7 +12,7 @@ export default function Navbar() {
     <nav className="sticky top-0 left-0 w-full bg-gradient-to-r from-[#232526] via-[#414345] to-[#ffd89b] border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-lg z-50 transition-all duration-300">
       <Link
         href="/"
-        className="flex items-center gap-2 font-bold text-flinch text-2xl tracking-tight hover:text-orange-200 transition"
+        className="flex items-center gap-2 font-bold text-2xl tracking-tight hover:text-orange-200 transition"
       >
         <span className="hidden sm:inline">Flinch</span>
         <span className="sm:hidden text-xl">😶‍🌫️</span>
@@ -23,7 +23,7 @@ export default function Navbar() {
       </div>
       {/* Mobile menu button */}
       <button
-        className="md:hidden text-flinch focus:outline-none p-2 rounded hover:bg-flinch/10"
+        className="md:hidden text-orange-50 focus:outline-none p-2 rounded hover:bg-orange-200"
         onClick={() => setOpen((v) => !v)}
         aria-label="Open menu"
       >
@@ -37,7 +37,7 @@ export default function Navbar() {
       {open && (
         <div className="fixed inset-0 bg-black/80 z-50 flex flex-col items-end p-8 md:hidden transition-all">
           <button
-            className="mb-8 text-flinch hover:text-orange-200"
+            className="mb-8 hover:text-orange-200"
             onClick={() => setOpen(false)}
             aria-label="Close menu"
           >
@@ -104,7 +104,7 @@ function NavLinks({ user, profile, onClick, isMobile }) {
       {user && (
         <button
           onClick={handleSignOut}
-          className={`ml-2 ${isMobile ? "text-gray-900 bg-orange-200" : "text-gray-600 bg-flinch"} px-4 py-2 rounded font-bold shadow hover:bg-orange-300 hover:text-black focus:outline-none focus:ring-2 focus:ring-flinch/60 transition cursor-pointer ${
+          className={`ml-2 ${isMobile ? "text-gray-900 bg-orange-200" : "text-gray-600 bg-orange-200"} px-4 py-2 rounded font-bold shadow hover:bg-orange-300 hover:text-black focus:outline-none focus:ring-2 focus:ring-flinch/60 transition cursor-pointer ${
             isMobile ? "w-full mt-2" : ""
           }`}
         >
@@ -115,7 +115,7 @@ function NavLinks({ user, profile, onClick, isMobile }) {
         <Link
           href="/login"
           onClick={onClick}
-          className={`${isMobile ? "text-gray-900 bg-orange-200" : "text-gray-600 bg-flinch"} px-4 py-2 rounded font-bold shadow hover:bg-orange-300 hover:text-black focus:outline-none focus:ring-2 focus:ring-flinch/60 transition cursor-pointer ${
+          className={`${isMobile ? "text-gray-900 bg-orange-200" : "text-gray-600 bg-orange-200"} px-4 py-2 rounded font-bold shadow hover:bg-orange-300 hover:text-black focus:outline-none focus:ring-2 focus:ring-flinch/60 transition cursor-pointer ${
             isMobile ? "w-full mt-2" : ""
           }`}
         >

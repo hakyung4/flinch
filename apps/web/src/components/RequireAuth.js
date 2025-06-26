@@ -29,7 +29,7 @@ export default function RequireAuth({ children }) {
   if (loading || profileLoading || profile === undefined) {
     return (
       <div className="flex justify-center items-center h-64">
-        <span className="text-flinch text-lg animate-pulse">Loading…</span>
+        <span className="text-lg animate-pulse">Loading…</span>
       </div>
     );
   }

@@ -153,11 +153,11 @@ export default function MyPosts() {
                       {new Date(post.created_at).toLocaleString()}
                     </span>
                     {post.vanished ? (
-                      <span className="bg-flinch/25 text-gray-700 px-2 py-0.5 rounded text-xs font-bold">
+                      <span className="bg-orange-300 text-gray-700 px-2 py-0.5 rounded text-xs font-bold">
                         Vanished
                       </span>
                     ) : (
-                      <span className="bg-flinch/20 text-gray-700 px-2 py-0.5 rounded text-xs font-bold">
+                      <span className="bg-orange-200 text-gray-700 px-2 py-0.5 rounded text-xs font-bold">
                         Public
                       </span>
                     )}

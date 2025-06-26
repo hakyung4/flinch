@@ -17,16 +17,22 @@ export default function Feed() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [totalPosts, setTotalPosts] = useState(0);
+  const [searchTerm, setSearchTerm] = useState(""); // <-- NEW
   const router = useRouter();
   const [showSigninMsg, setShowSigninMsg] = useState(false);
   const [showHandleMsg, setShowHandleMsg] = useState(false);
 
+  // Count for ALL posts that match search (for pagination)
   async function fetchTotalPosts() {
-    const { count } = await supabase
+    let query = supabase
       .from("posts")
       .select("*", { count: "exact", head: true })
       .eq("is_public", true)
       .eq("vanished", false);
+    if (searchTerm) {
+      query = query.textSearch("content", searchTerm, { type: "websearch" });
+    }
+    const { count } = await query;
     setTotalPosts(count || 0);
   }
 
@@ -35,14 +41,18 @@ export default function Feed() {
     const from = (pageNum - 1) * pageSizeNum;
     const to = from + pageSizeNum - 1;
 
-    // 1. Fetch posts
-    const { data: postsData, error } = await supabase
+    let query = supabase
       .from("posts")
       .select("id, content, created_at, flinch_count, vanished, user_id, profiles(handle)")
       .eq("is_public", true)
       .eq("vanished", false)
-      .order("created_at", { ascending: false })
-      .range(from, to);
+      .order("created_at", { ascending: false });
+
+    if (searchTerm) {
+      query = query.textSearch("content", searchTerm, { type: "websearch" });
+    }
+
+    const { data: postsData, error } = await query.range(from, to);
 
     if (!postsData || error) {
       setPosts([]);
@@ -52,7 +62,7 @@ export default function Feed() {
     }
     setPosts(postsData);
 
-    // 2. Fetch flinched post ids for these posts
+    // Fetch flinched post ids for these posts
     if (user?.id && postsData.length > 0) {
       const postIds = postsData.map((post) => post.id);
       const { data: flinches } = await supabase
@@ -70,34 +80,36 @@ export default function Feed() {
     setLoading(false);
   }
 
+  // Refetch count when searchTerm changes or on mount
   useEffect(() => {
     fetchTotalPosts();
     // eslint-disable-next-line
-  }, []);
+  }, [searchTerm]);
 
+  // Refetch posts when searchTerm, page, or pageSize changes
   useEffect(() => {
     fetchPosts(page, pageSize);
     // eslint-disable-next-line
-  }, [page, pageSize, user?.id]);
+  }, [page, pageSize, user?.id, searchTerm]);
 
   useEffect(() => {
     if (!authLoading && !user) {
       setShowSigninMsg(true);
       setTimeout(() => {
         router.replace("/login");
-      }, 1500); // Show message for 1.5s before redirecting
+      }, 1500);
     }
   }, [user, authLoading, router]);
-  
+
   useEffect(() => {
-  if (!authLoading && !profileLoading) {
-    if (!user) {
-      setShowSigninMsg(true);
-      setTimeout(() => router.replace("/login"), 1500);
-    } else if (needsHandle(profile)) {
-      setShowHandleMsg(true);
-      setTimeout(() => router.replace("/set-handle"), 1500);
-    }
+    if (!authLoading && !profileLoading) {
+      if (!user) {
+        setShowSigninMsg(true);
+        setTimeout(() => router.replace("/login"), 1500);
+      } else if (needsHandle(profile)) {
+        setShowHandleMsg(true);
+        setTimeout(() => router.replace("/set-handle"), 1500);
+      }
     }
   }, [user, profile, authLoading, profileLoading, router]);
 
@@ -117,8 +129,6 @@ export default function Feed() {
       </main>
     );
   }
-
-  // If not signed in, show sign-in required message
   if (showSigninMsg) {
     return (
       <main className="max-w-2xl mx-auto mt-10 px-2">
@@ -129,7 +139,6 @@ export default function Feed() {
     );
   }
 
-
   function handlePageChange(newPage) {
     setPage(newPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -137,6 +146,12 @@ export default function Feed() {
 
   function handlePageSizeChange(e) {
     setPageSize(Number(e.target.value));
+    setPage(1);
+  }
+
+  // When search changes, reset to first page
+  function handleSearchChange(e) {
+    setSearchTerm(e.target.value);
     setPage(1);
   }
 
@@ -150,18 +165,29 @@ export default function Feed() {
         <div className="mb-8">
           <PostConfessionForm onPost={() => { fetchTotalPosts(); fetchPosts(1, pageSize); setPage(1); }} />
         </div>
-        <div className="flex items-center gap-3 mb-4">
-          <label htmlFor="page-size" className="font-semibold text-gray-700">Posts per page:</label>
-          <select
-            id="page-size"
-            value={pageSize}
-            onChange={handlePageSizeChange}
-            className="border rounded px-2 py-1 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-200"
-          >
-            {[...Array(10)].map((_, i) => (
-              <option key={i+1} value={i+1}>{i+1}</option>
-            ))}
-          </select>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="Search confessions…"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="border rounded px-2 py-1 w-full bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-200"
+            />
+          </div>
+          <div className="flex items-center gap-3">
+            <label htmlFor="page-size" className="font-semibold text-gray-700">Posts per page:</label>
+            <select
+              id="page-size"
+              value={pageSize}
+              onChange={handlePageSizeChange}
+              className="border rounded px-2 py-1 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-200"
+            >
+              {[...Array(10)].map((_, i) => (
+                <option key={i+1} value={i+1}>{i+1}</option>
+              ))}
+            </select>
+          </div>
         </div>
         {loading ? (
           <div className="text-center text-gray-400 mt-8">Loading...</div>
@@ -187,7 +213,7 @@ export default function Feed() {
                 page={page}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
-                loading={loading} // pass loading prop!
+                loading={loading}
               />
             )}
           </>

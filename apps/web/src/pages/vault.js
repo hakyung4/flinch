@@ -156,7 +156,7 @@ export default function Vault() {
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-bold text-gray-900 text-base tracking-tight flex items-center gap-2">
-                      <span className="bg-flinch/10 px-2 py-0.5 rounded text-gray-700 font-mono text-xs">
+                      <span className="bg-orange-200 px-2 py-0.5 rounded text-gray-700 font-mono text-xs">
                         @{entry.posts?.profiles?.handle || "anonymous"}
                       </span>
                     </span>

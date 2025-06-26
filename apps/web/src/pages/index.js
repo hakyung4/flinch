@@ -164,7 +164,7 @@ export default function Home() {
           <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-gray-800">Contact & Feedback</h2>
           <p className="text-gray-700 mb-2">
             Have a question, suggestion, or concern? Reach out to us at{" "}
-            <Link href="mailto:support@flinch.app" className="underline text-flinch hover:text-orange-600">
+            <Link href="mailto:support@flinch.app" className="underline hover:text-orange-600">
               support@flinch.app
             </Link>
             {" "}— we’d love to hear from you!

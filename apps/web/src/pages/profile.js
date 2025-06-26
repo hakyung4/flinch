@@ -119,14 +119,14 @@ export default function ProfilePage() {
             <div>
               <span className="font-bold text-gray-700 text-lg flex items-center gap-2">
                 @{profile?.handle}
-                <span className="bg-flinch/10 text-flinch text-xs font-semibold px-2 py-0.5 rounded-full">You</span>
+                <span className="bg-orange-200 text-xs font-semibold px-2 py-0.5 rounded-full">You</span>
               </span>
               <div className="text-xs text-gray-700 font-mono">Joined {user?.created_at && new Date(user.created_at).toLocaleDateString()}</div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 mt-4">
             <ProfileStat label="Posts written" value={stats?.totalPosts ?? "…"} icon="✍️" />
-            <ProfileStat label="Posts vanished" value={stats?.vanishedPosts ?? "…"} icon="🌫️" color="text-flinch" />
+            <ProfileStat label="Posts vanished" value={stats?.vanishedPosts ?? "…"} icon="🌫️" />
             <ProfileStat label="Flinches received" value={stats?.flinchesReceived ?? "…"} icon="💥" color="text-orange-500" />
             <ProfileStat label="Flinches given" value={stats?.flinchesGiven ?? "…"} icon="👏" color="text-orange-500" />
           </div>

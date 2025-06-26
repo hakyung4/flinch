@@ -32,7 +32,7 @@ export default function Signup() {
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-flinch/10 to-orange-200">
       <div className="w-full max-w-md bg-white/100 rounded-2xl shadow-2xl p-8 border border-orange-100">
         <div className="flex flex-col items-center mb-8">
-          <span className="text-flinch text-5xl mb-2">😶‍🌫️</span>
+          <span className="text-5xl mb-2">😶‍🌫️</span>
           <h1 className="text-3xl font-extrabold text-gray-900 mb-1 tracking-tight">Create Account</h1>
           <p className="text-gray-500 text-center font-medium">Sign up to join Flinch</p>
         </div>
@@ -67,7 +67,7 @@ export default function Signup() {
           </div>
           <button
             type="submit"
-            className="w-full bg-flinch text-black bg-orange-400 font-bold py-3 rounded-lg mt-2 shadow-lg hover:bg-orange-500 active:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-flinch/60 transition"
+            className="w-full text-black bg-orange-400 font-bold py-3 rounded-lg mt-2 shadow-lg hover:bg-orange-500 active:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-flinch/60 transition"
             disabled={loading}
             style={{ opacity: loading ? 0.6 : 1, cursor: loading ? "not-allowed" : "pointer" }}
           >
@@ -83,7 +83,7 @@ export default function Signup() {
         {error && <p className="text-red-600 mt-4 text-center font-semibold">{error}</p>}
         <p className="mt-8 text-center text-gray-700">
           Already have an account?{" "}
-          <Link className="text-flinch font-semibold hover:underline" href="/login">
+          <Link className="font-semibold hover:underline" href="/login">
             Login
           </Link>
         </p>

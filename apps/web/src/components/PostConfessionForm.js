@@ -7,15 +7,11 @@ export default function PostConfessionForm({ onPost }) {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError("");
-    if (!content.trim()) {
-      setError("Confession cannot be empty.");
-      return;
-    }
+  async function actuallyPost() {
     setLoading(true);
+    setError("");
     const { error } = await supabase
       .from("posts")
       .insert({
@@ -25,7 +21,22 @@ export default function PostConfessionForm({ onPost }) {
     setLoading(false);
     if (error) return setError(error.message);
     setContent("");
+    setShowConfirm(false);
     onPost && onPost();
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    setError("");
+    if (!content.trim()) {
+      setError("Confession cannot be empty.");
+      return;
+    }
+    setShowConfirm(true);
+  }
+
+  function handleCancel() {
+    setShowConfirm(false);
   }
 
   return (
@@ -37,7 +48,7 @@ export default function PostConfessionForm({ onPost }) {
           placeholder="Write your anonymous confession…be careful, it will be public and non-removable!"
           value={content}
           onChange={e => setContent(e.target.value)}
-          disabled={loading}
+          disabled={loading || showConfirm}
           maxLength={500}
         />
       </div>
@@ -45,12 +56,42 @@ export default function PostConfessionForm({ onPost }) {
       <div className="flex justify-end mt-2">
         <button
           type="submit"
-          className="bg-orange-100 hover:bg-orange-200 cursor-pointer text-gray-700 font-bold px-6 py-2.5 rounded-xl transition shadow-lg focus:outline-none focus:ring-2 focus:ring-flinch/50"
-          disabled={loading}
+          className="bg-orange-300 hover:bg-orange-400 cursor-pointer text-gray-700 hover:text-white font-bold px-6 py-2.5 rounded-xl transition shadow-lg focus:outline-none focus:ring-2 focus:ring-flinch/50"
+          disabled={loading || showConfirm}
         >
           {loading ? "Posting..." : "Post"}
         </button>
       </div>
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl shadow-lg max-w-xs w-full">
+            <p className="mb-4 text-center text-gray-800">
+              Are you sure you want to post this confession?<br />
+              <span className="text-red-500 font-semibold">
+                Once posted, it cannot be removed.
+              </span>
+            </p>
+            <div className="flex gap-3 justify-center">
+              <button
+                className="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded font-bold cursor-pointer"
+                disabled={loading}
+                onClick={actuallyPost}
+                type="button"
+              >
+                {loading ? "Posting..." : "Yes, Post"}
+              </button>
+              <button
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded font-bold cursor-pointer"
+                disabled={loading}
+                onClick={handleCancel}
+                type="button"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 }
