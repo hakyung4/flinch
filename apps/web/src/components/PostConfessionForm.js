@@ -34,7 +34,7 @@ export default function PostConfessionForm({ onPost }) {
         <textarea
           className="w-full bg-transparent border-0 focus:ring-0 focus:outline-none text-gray-900 placeholder-gray-400 text-lg resize-none"
           rows={3}
-          placeholder="Write your anonymous confession…"
+          placeholder="Write your anonymous confession…be careful, it will be public and non-removable!"
           value={content}
           onChange={e => setContent(e.target.value)}
           disabled={loading}

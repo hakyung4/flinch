@@ -28,7 +28,10 @@ const FAQ = [
   },
   {
     q: "Can I delete my posts or account?",
-    a: "Yes! You can delete your own confessions at any time, and you can contact us to remove your account completely."
+    a: <>
+    You can't delete your posts! So, be mindful of what you share. If you need to remove your post for legal reasons, please contact <Link href="mailto:support@flinch.app" className="underline text-gray-700 hover:text-gray-500">us</Link>.<br />
+    For account deletion, just email us at <Link href="mailto:support@flinch.app" className="underline text-gray-700 hover:text-gray-500">support@flinch.app</Link> and we’ll handle it for you.
+    </>
   },
   {
     q: "What kind of content is allowed?",
@@ -39,7 +42,30 @@ const FAQ = [
   },
   {
     q: "How do you keep the community safe?",
-    a: "Our moderation team reviews reports, and users can flag inappropriate content. We strive to keep Flinch a safe, welcoming place for all."
+    a: "Our moderation team reviews and removes inappropriate contents. We strive to keep Flinch a safe, welcoming place for all."
+  },
+  {
+    q: "I want to see more features! What’s next?",
+    a: <>
+    We’re always working to add new features—let us know what you’d like to see!
+    You can reach us at <Link href="mailto:support@flinch.app" className="underline text-gray-700 hover:text-gray-500">support@flinch.app</Link>
+    </>
+  },
+  {
+    q: "How is Flinch different from other social platforms like Reddit, X, Facebook, or Instagram?",
+    a: <>
+      Unlike traditional social platforms, Flinch is built around anonymity, minimalism, and genuine self-expression.
+      <ul className="list-disc ml-6 mt-2 space-y-1 text-left">
+        <li><b>Anonymity by default:</b> No public profiles, no follower counts, and no pressure to perform.</li>
+        <li><b>No popularity contest:</b> There are no likes, shares, or upvotes—just honest sharing.</li>
+        <li><b>Minimal distractions:</b> No algorithmic feeds, targeted ads, or endless notifications.</li>
+        <li><b>Unique vanish/flinch mechanics:</b> Posts can vanish, and flinches encourage honesty, not virality.</li>
+        <li><b>Supportive environment:</b> Community guidelines and moderation focus on safety and respect, not outrage or clickbait.</li>
+      </ul>
+      <span className="block mt-2">
+        While platforms like Reddit, X (Twitter), Facebook, and Instagram are about building a public persona or network, Flinch centers on authentic, anonymous sharing and human connection.
+      </span>
+    </>
   }
 ];
 
@@ -95,12 +121,12 @@ export default function Home() {
             <FeatureCard
               icon="🏆"
               title="Community & Support"
-              desc="Browse, comment, and support others. Leaderboards and profiles keep it positive."
+              desc="Browse, flinch and support others. Leaderboards and profiles keep it positive."
             />
             <FeatureCard
               icon="🧰"
               title="Your Vault"
-              desc="Save favorite posts, manage your confessions, and track your journey."
+              desc="View your vanished confessions, and track your journey."
             />
           </div>
         </section>
@@ -112,8 +138,8 @@ export default function Home() {
           <ol className="list-decimal ml-7 text-base space-y-2 text-gray-800 font-medium">
             <li>Sign up (your identity always stays private).</li>
             <li>Write and post your confession anonymously — no names, no judgment.</li>
-            <li>React, comment, and connect with the community.</li>
-            <li>Use the Vault to save your favorite posts and view “My Posts.”</li>
+            <li>React to confessions with a flinch.</li>
+            <li>Want to leave for good? just email us at <Link href="mailto:support@flinch.app" className="underline text-gray-700 hover:text-gray-500">support@flinch.app</Link> to delete your account.</li>
             <li>Climb the leaderboard and earn badges for milestones!</li>
           </ol>
         </section>
