@@ -72,7 +72,7 @@ function FlinchButton({ postId, initialCount, userId, flinched, postAuthorId, on
         className="flex items-center px-5 py-2 rounded-lg bg-gray-200 text-gray-400 font-semibold text-base cursor-not-allowed shadow-md"
         disabled
         aria-disabled="true"
-        title="You can't flinch your own post"
+        title="You can&apos;t flinch your own post"
       >
         <span className="pr-1 text-lg">💥</span>
         <span>Flinch</span>

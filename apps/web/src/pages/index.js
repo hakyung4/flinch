@@ -29,7 +29,7 @@ const FAQ = [
   {
     q: "Can I delete my posts or account?",
     a: <>
-    You can't delete your posts! So, be mindful of what you share. If you need to remove your post for legal reasons, please contact <Link href="mailto:support@flinch.app" className="underline text-gray-700 hover:text-gray-500">us</Link>.<br />
+    You can&apos;t delete your posts! So, be mindful of what you share. If you need to remove your post for legal reasons, please contact <Link href="mailto:support@flinch.app" className="underline text-gray-700 hover:text-gray-500">us</Link>.<br />
     For account deletion, just email us at <Link href="mailto:support@flinch.app" className="underline text-gray-700 hover:text-gray-500">support@flinch.app</Link> and we’ll handle it for you.
     </>
   },
