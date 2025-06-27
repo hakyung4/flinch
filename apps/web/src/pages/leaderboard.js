@@ -99,7 +99,7 @@ export default function Leaderboard() {
           <div className="text-center text-gray-500">Loading…</div>
         ) : (
           <ol className="space-y-3">
-            {top.length === 0 && <li>No flinches in the last 24 hours.</li>}
+            {top.length === 0 && <li className="text-gray-500">No flinches in the last 24 hours.</li>}
             {top.map((row, idx) => (
               <li
                 key={row.user_id}
